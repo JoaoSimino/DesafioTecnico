@@ -1,0 +1,47 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+
+# Rider
+.idea/
+
+# Auto-generated files
+*.Generated.cs
+
+# Others
+*.log
+*.tlog
+*.cache
+*.ilk
+*.pdb
+*.idb
+*.iobj
+*.ipdb
+*.pgc
+*.pgd
+
+# Packages
+*.nupkg
+*.snupkg
+packages/
+
+# Resharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Others
+*.DS_Store
+
