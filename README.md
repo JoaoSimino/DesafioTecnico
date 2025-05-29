@@ -98,8 +98,9 @@ criar eventos que limpa os Items da Lista de pedido cancelado, e atualiza tambem
 começar estruturar testes unitarios[X], criar alguns testes persistentes[X]
 colocar o projeto no git[X]
 Implementar autenticação (ex: JWT) [X]
-colocar no github com actions[]
-a cada push deve executar os testes e me gerar um package[]
+colocar no github com actions[X]
+gerar package no final, um container com api dotnet[]
+a cada push deve executar os testes e me gerar um package[X]
 usar secrets na chave jwt![todo]
 
 

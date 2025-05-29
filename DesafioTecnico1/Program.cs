@@ -14,6 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DesafioTecnicoContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DesafioTecnicoContext") ?? throw new InvalidOperationException("Connection string 'DesafioTecnicoContext' not found.")));
 
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+        .AddEntityFrameworkStores<DesafioTecnicoContext>()
+        .AddDefaultTokenProviders();
 
 if (builder.Environment.IsEnvironment("Testing"))
 {
@@ -22,9 +25,7 @@ if (builder.Environment.IsEnvironment("Testing"))
 else
 {
     //-Adicionando JWT-//
-    builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-        .AddEntityFrameworkStores<DesafioTecnicoContext>()
-        .AddDefaultTokenProviders();
+    
 
     builder.Services.AddAuthentication(options =>
     {
