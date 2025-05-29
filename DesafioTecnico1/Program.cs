@@ -14,39 +14,49 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DesafioTecnicoContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DesafioTecnicoContext") ?? throw new InvalidOperationException("Connection string 'DesafioTecnicoContext' not found.")));
 
-//-Adicionando JWT-//
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<DesafioTecnicoContext>()
-    .AddDefaultTokenProviders();
 
-builder.Services.AddAuthentication(options =>
+if (builder.Environment.IsEnvironment("Testing"))
 {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
+    // não configure o middleware de autenticação aqui
+}
+else
 {
-    options.TokenValidationParameters = new TokenValidationParameters
+    //-Adicionando JWT-//
+    builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+        .AddEntityFrameworkStores<DesafioTecnicoContext>()
+        .AddDefaultTokenProviders();
+
+    builder.Services.AddAuthentication(options =>
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-    };
-});
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
+    });
 
-builder.Services.AddAuthorization(options =>
-{
-    // Fallback: todos os endpoints exigem autenticação
-    options.FallbackPolicy = new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
-        .RequireAuthenticatedUser()
-        .Build();
-});
-//-Adicionando JWT-//
+    builder.Services.AddAuthorization(options =>
+    {
+        // Fallback: todos os endpoints exigem autenticação
+        options.FallbackPolicy = new Microsoft.AspNetCore.Authorization.AuthorizationPolicyBuilder()
+            .RequireAuthenticatedUser()
+            .Build();
+    });
+    //-Adicionando JWT-//
+
+}
+
 
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
