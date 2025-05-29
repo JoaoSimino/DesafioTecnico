@@ -27,7 +27,6 @@ jobs:
           --health-retries=5
 
     env:
-      # Variáveis de conexão ao banco para a aplicação/testes
       ASPNETCORE_ENVIRONMENT: Testing
       ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=desafio;Username=user;Password=password@123"
 
@@ -40,11 +39,31 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Install EF Core tools
+        run: dotnet tool install --global dotnet-ef
+
+      - name: Add EF Core tools to PATH
+        run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
+
       - name: Restore dependencies
         run: dotnet restore
 
       - name: Build
         run: dotnet build --no-restore
+
+      - name: Wait for PostgreSQL
+        run: |
+          for i in {1..10}; do
+            pg_isready -h localhost -p 5432 && break
+            echo "Waiting for PostgreSQL..."
+            sleep 5
+          done
+
+      - name: Run EF Core migrations
+        run: dotnet ef database update --project src/SeuProjeto.Api/SeuProjeto.Api.csproj
+        env:
+          ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=desafio;Username=user;Password=password@123"
+          ASPNETCORE_ENVIRONMENT: Testing
 
       - name: Run tests
         run: dotnet test --no-build --verbosity normal
