@@ -28,6 +28,7 @@ jobs:
 
     env:
       # Variáveis de conexão ao banco para a aplicação/testes
+      ASPNETCORE_ENVIRONMENT: Testing
       ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=desafio;Username=user;Password=password@123"
 
     steps:
