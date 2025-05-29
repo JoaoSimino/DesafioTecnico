@@ -95,9 +95,13 @@ validar dtos endpoints e ajustar tudo[X]
 ajustar o preco unitario do item com base no preco do produto[X]
 criar endpoints para gerencia de status do pedido[X]
 criar eventos que limpa os Items da Lista de pedido cancelado, e atualiza tambem os obejtos em estoque[X]
-começar estruturar testes unitarios[X], criar alguns testes persistentes[]
+começar estruturar testes unitarios[X], criar alguns testes persistentes[X]
 colocar o projeto no git[X]
-Implementar autenticação (ex: JWT) []
+Implementar autenticação (ex: JWT) [X]
 colocar no github com actions[]
 a cada push deve executar os testes e me gerar um package[]
+usar secrets na chave jwt![todo]
+
+
+
 

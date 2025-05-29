@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using DesafioTecnico1.Model;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace DesafioTecnico1.Data
 {
-    public class DesafioTecnicoContext : DbContext
+    public class DesafioTecnicoContext : IdentityDbContext<IdentityUser> //DbContext
     {
         public DesafioTecnicoContext(DbContextOptions<DesafioTecnicoContext> options)
             : base(options)
