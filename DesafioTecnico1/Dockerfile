@@ -3,11 +3,11 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
 # Copia csproj e restaura dependências
-COPY DesafioTecnico1/*.csproj ./
+COPY *.csproj ./
 RUN dotnet restore
 
 # Copia todo o código
-COPY DesafioTecnico1/. ./
+COPY . ./
 
 # Build em modo Release
 RUN dotnet publish -c Release -o out
@@ -19,7 +19,7 @@ WORKDIR /app
 # Copia app buildado do stage anterior
 COPY --from=build /app/out ./
 
-# Exponha a porta que sua API usa (ajuste se não for 80)
+# Exponha a porta que sua API usa
 EXPOSE 80
 
 # Comando de entrada
