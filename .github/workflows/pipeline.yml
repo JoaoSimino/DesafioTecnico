@@ -27,7 +27,7 @@ jobs:
           --health-retries=5
 
     env:
-      ASPNETCORE_ENVIRONMENT: Testing
+      ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=desafio;Username=user;Password=password@123"
 
     steps:

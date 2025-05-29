@@ -18,7 +18,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
         .AddEntityFrameworkStores<DesafioTecnicoContext>()
         .AddDefaultTokenProviders();
 
-if (builder.Environment.IsEnvironment("Testing"))
+if (builder.Environment.IsEnvironment("Development"))
 {
     // não configure o middleware de autenticação aqui
 }
@@ -116,7 +116,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-if (!builder.Environment.IsEnvironment("Testing"))
+if (!builder.Environment.IsEnvironment("Development"))
 {
     app.UseAuthentication();
     app.UseAuthorization();

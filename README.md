@@ -100,6 +100,8 @@ colocar o projeto no git[X]
 Implementar autenticação (ex: JWT) [X]
 colocar no github com actions[X]
 gerar package no final, um container com api dotnet[]
+publicar no hub e ver como passar conexao de banco[]
+ver de variavel local para rodar testes tbem locais[]
 a cada push deve executar os testes e me gerar um package[X]
 usar secrets na chave jwt![todo]
 
