@@ -64,4 +64,140 @@ public class PedidoServiceTests
             response.StatusCode == System.Net.HttpStatusCode.BadRequest ||
             response.StatusCode == System.Net.HttpStatusCode.InternalServerError);
     }
+
+    [Fact]
+    public async Task DadoUmPedidoCriadoValorDeProdutoNoEstoqueDeveSerAbatido()
+    {
+        // Arrange - cria cliente
+        var clienteResponse = await _client.GetAsync("/api/Cliente");
+        clienteResponse.EnsureSuccessStatusCode();
+        var clientes = await clienteResponse.Content.ReadFromJsonAsync<List<Cliente>>();
+        Assert.NotEmpty(clientes);
+        var cliente = clientes.First();
+
+
+        //Cria Produto 
+        var produtoDto = new
+        {
+            Nome = "Produto Teste",
+            Descricao = "Descrição Produto Teste",
+            Preco = 10,
+            Estoque = 100,
+        };
+        var response = await _client.PostAsJsonAsync("/api/Produto", produtoDto);
+        response.EnsureSuccessStatusCode();
+        var produto = await response.Content.ReadFromJsonAsync<Produto>();
+
+        
+
+        // Cria pedido
+        var pedidoDto = new
+        {
+            ClientId = cliente.Id,
+            DataPedido = DateTime.UtcNow,
+            Status = 0,
+            Itens = new List<object>
+            {
+            }
+        };
+
+
+        var createResponse = await _client.PostAsJsonAsync("/api/Pedido", pedidoDto);
+        createResponse.EnsureSuccessStatusCode();
+
+        // Buscar pedido criado
+        var pedidosResponse = await _client.GetAsync("/api/Pedido");
+        var pedidos = await pedidosResponse.Content.ReadFromJsonAsync<List<Pedido>>();
+        var pedidoCriado = pedidos.Last(); // Pega o último criado
+
+        //cria item Pedido
+        var itemDto = new
+        {
+            ProdutoId = produto.Id,
+            PedidoId = pedidoCriado.Id,
+            Quantidade = 10
+        };
+
+        var itemResponse = await _client.PostAsJsonAsync("/api/ItemPedido", itemDto);
+        itemResponse.EnsureSuccessStatusCode();
+
+        var produtoResponse = await _client.GetAsync($"/api/Produto/{produto.Id}");
+        produtoResponse.EnsureSuccessStatusCode();
+        var produtoAtualizado = await produtoResponse.Content.ReadFromJsonAsync<Produto>();
+
+        Assert.Equal(produto.Estoque - itemDto.Quantidade, produtoAtualizado.Estoque);
+
+
+    }
+
+    //ultimo teste verificar se alterar o status para cancelado os produtos de estoque sao repostos
+    [Fact]
+    public async Task DadoAlteracaoDoPedidoParaCanceladoItensProdutosDevemSerZeradosERespostoEmEstoque()
+    {
+        // Arrange - cria cliente
+        var clienteResponse = await _client.GetAsync("/api/Cliente");
+        clienteResponse.EnsureSuccessStatusCode();
+        var clientes = await clienteResponse.Content.ReadFromJsonAsync<List<Cliente>>();
+        Assert.NotEmpty(clientes);
+        var cliente = clientes.First();
+
+        //Cria Produto 
+        var produtoDto = new
+        {
+            Nome = "Produto Teste",
+            Descricao = "Descrição Produto Teste",
+            Preco = 10,
+            Estoque = 100,
+        };
+        var response = await _client.PostAsJsonAsync("/api/Produto", produtoDto);
+        response.EnsureSuccessStatusCode();
+        var produto = await response.Content.ReadFromJsonAsync<Produto>();
+
+
+
+        // Cria pedido
+        var pedidoDto = new
+        {
+            ClientId = cliente.Id,
+            DataPedido = DateTime.UtcNow,
+            Status = 0,
+            Itens = new List<object>
+            {
+            }
+        };
+
+
+        var createResponse = await _client.PostAsJsonAsync("/api/Pedido", pedidoDto);
+        createResponse.EnsureSuccessStatusCode();
+
+        // Buscar pedido criado
+        var pedidosResponse = await _client.GetAsync("/api/Pedido");
+        var pedidos = await pedidosResponse.Content.ReadFromJsonAsync<List<Pedido>>();
+        var pedidoCriado = pedidos.Last(); // Pega o último criado
+
+        //cria item Pedido
+        var itemDto = new
+        {
+            ProdutoId = produto.Id,
+            PedidoId = pedidoCriado.Id,
+            Quantidade = 10
+        };
+
+        var itemResponse = await _client.PostAsJsonAsync("/api/ItemPedido", itemDto);
+        itemResponse.EnsureSuccessStatusCode();
+
+        var patchDto = new
+        {
+            Status = 2 // para Cancelar
+        };
+        var statusReponse = await _client.PatchAsJsonAsync($"/api/Pedido/{pedidoCriado.Id}/status", patchDto);
+        statusReponse.EnsureSuccessStatusCode();
+
+        //validar quantidade produto em estoque
+        var responseProdutoAlterado = await _client.GetAsync($"/api/Produto/{produto.Id}");
+        response.EnsureSuccessStatusCode();
+        var produtoAlterado = await responseProdutoAlterado.Content.ReadFromJsonAsync<Produto>();
+
+        Assert.Equal(produtoDto.Estoque, produtoAlterado.Estoque);
+    }
 }
