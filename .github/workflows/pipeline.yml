@@ -60,7 +60,7 @@ jobs:
           done
 
       - name: Run EF Core migrations
-        run: dotnet ef database update --project src/SeuProjeto.Api/SeuProjeto.Api.csproj
+        run: dotnet ef database update --project DesafioTecnico1.csproj
         env:
           ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=desafio;Username=user;Password=password@123"
           ASPNETCORE_ENVIRONMENT: Testing
