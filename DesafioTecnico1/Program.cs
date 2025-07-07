@@ -119,11 +119,11 @@ columnOptions.Store.Add(StandardColumn.LogEvent);
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     .WriteTo.Console(outputTemplate: outputTemplate)
-    .WriteTo.MSSqlServer(
-        connectionString: "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Estudos;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False",
-        sinkOptions: sinkOptions,
-        columnOptions: columnOptions
-    )
+    //.WriteTo.MSSqlServer(
+    //    connectionString: "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Estudos;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False",
+    //    sinkOptions: sinkOptions,
+    //    columnOptions: columnOptions
+    //)
     .Enrich.FromLogContext()
     .CreateLogger();
 
