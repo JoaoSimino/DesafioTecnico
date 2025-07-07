@@ -19,15 +19,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Start PostgreSQL container
-        run: |
-          docker run -d --name pg-ci-test `
-            -e POSTGRES_USER=user `
-            -e POSTGRES_PASSWORD=password@123 `
-            -e POSTGRES_DB=desafio `
-            -p 5432:5432 `
-            postgres:16
-
       - name: Wait for PostgreSQL to be ready
         run: |
           for /l %%x in (1, 1, 10) do (
