@@ -18,16 +18,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Wait for PostgreSQL to be ready
-        run: |
-          for /l %%x in (1, 1, 10) do (
-            docker exec pg-ci-test pg_isready && exit /b 0
-            timeout /t 5
-          )
-          echo PostgreSQL did not become ready in time
-          exit /b 1
-
+        
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
