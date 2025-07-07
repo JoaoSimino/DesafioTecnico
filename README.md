@@ -1,110 +1,114 @@
-📝 Desafio Técnico – Backend Developer (C#/.NET)
-Contexto
-Você foi contratado para desenvolver uma API RESTful para gerenciar um sistema de controle de pedidos e clientes para uma loja virtual. Esse sistema permitirá que os clientes realizem pedidos e acompanhem seus status.
+# Desafio Técnico - API de Gerenciamento de Dados
 
-Requisitos principais
-Funcionalidades obrigatórias:
+O desafio foi criado por uma IA, com a finalidade de treinamento de desenvolvimento backend e tecnologiais atuais de mercado. Todos os requisitos de tecnologia que deveriam conter foram passados no prompt.
 
-CRUD de Clientes [X]
-Cliente: Id, Nome, Email, Telefone, DataCadastro
+## 📋 Descrição do Projeto
 
-CRUD de Produtos[X]
-Produto: Id, Nome, Descrição, Preço, Estoque
+Desenvolver uma API RESTful para gerenciar um sistema de controle de pedidos e clientes para uma loja virtual. Esse sistema permitirá que os clientes realizem pedidos e acompanhem seus status.
 
-CRUD de Pedidos[X]
-Pedido: Id, ClienteId, DataPedido, Status (Aberto, Pago, Cancelado), Itens
+Requisitos principais Funcionalidades obrigatórias:
 
+CRUD de Clientes - Cliente: Id, Nome, Email, Telefone, DataCadastro
 
-ItemPedido: ProdutoId, Quantidade, PreçoUnitario[X]
+CRUD de Produtos - Produto: Id, Nome, Descrição, Preço, Estoque
 
-------------
+CRUD de Pedidos - Pedido: Id, ClienteId, DataPedido, Status (Aberto, Pago, Cancelado), Itens
 
-Ao criar um Pedido:
-
-Validar se o Cliente existe. [X]
-
-Validar se todos os Produtos existem e possuem estoque suficiente.[X]
-
-Deduzir o estoque dos produtos.[X]
-
-Ao cancelar um Pedido: [X]
-
-Repor o estoque dos produtos.[X]
-
-Endpoint para alterar o status do pedido (Aberto -> Pago, Aberto -> Cancelado).[X]
-
-Endpoint para listar todos os pedidos de um cliente específico.[X]
-
-Requisitos técnicos
-✅ Utilizar .NET 8 ou superior
-✅ Utilizar Entity Framework Core (com SQLite ou PostgreSQL local)
-✅ Estruturar utilizando Clean Architecture (Domain, Application, Infrastructure, API)
-✅ Aplicar o princípio de Injeção de Dependência
-✅ Seguir boas práticas de SOLID
-✅ Criar pelo menos 3 testes unitários com xUnit ou NUnit
-✅ Utilizar AutoMapper para mapeamento entre DTOs e entidades
-✅ Criar validações com FluentValidation
-✅ Documentar a API com Swagger 
-
-O que será avaliado:
-Estrutura e organização do código
-
-Clareza e objetividade na modelagem
-
-Uso adequado de padrões e boas práticas
-
-Escrita de testes unitários
-
-Qualidade da documentação da API
-
-Uso eficiente de Git (estrutura de commits)
-
-Extras (não obrigatório, mas será um diferencial):
-✨ Implementar padrão MediatR para comandos e queries[X]
-✨ Publicar a aplicação usando Docker [X]
-✨ Implementar autenticação (ex: JWT) [todo]
-✨ Criar um pipeline de CI com GitHub Actions [todo]
-tratamento de erros -> IExceptionHandler[X]
-
-Como entregar?
-Suba o código em um repositório público (GitHub ou GitLab).
-
-Inclua no README:
-
-Descrição do projeto
-
-Como executar localmente
-
-Como executar os testes
-
-⚠️ Importante:
-Não se preocupe em entregar algo "perfeito". O foco é demonstrar sua capacidade de resolver o problema com qualidade, clareza e boas práticas.
-
-Use os recursos que normalmente usaria no dia a dia.
-
----
-autenticacao jwt[]
-usar boas praticas, para excessoes[X]
-testes unitarios[todo]
-orientado a eventos?mediatR[X]
-questao de ciclo infinito nos endpoints, tirar[X]
----
-
-etapas, configuracao relacao entre entidades  no context o que eh oneToMany...,etc[X]
-validar dtos endpoints e ajustar tudo[X]
-ajustar o preco unitario do item com base no preco do produto[X]
-criar endpoints para gerencia de status do pedido[X]
-criar eventos que limpa os Items da Lista de pedido cancelado, e atualiza tambem os obejtos em estoque[X]
-começar estruturar testes unitarios[X], criar alguns testes persistentes[X]
-colocar o projeto no git[X]
-Implementar autenticação (ex: JWT) [X]
-colocar no github com actions[X]
-gerar package no final, um container com api dotnet[]
-publicar no hub e ver como passar conexao de banco[]
-ver de variavel local para rodar testes tbem locais[]
-a cada push deve executar os testes e me gerar um package[X]
-usar secrets na chave jwt![todo]
+ItemPedido: ProdutoId, Quantidade, Preço Unitario
+### Principais Funcionalidades
+- **Criação de um Pedido**: Validar se o Cliente existe, e se todos os Produtos existem e possuem estoque suficiente. E por fim deduzir o estoque dos produtos
+- **Endpoint para alterar o status do pedido**: Aberto -> Pago, Aberto -> Cancelado.
+- **Endpoint para listar pedidos**:  Listar todos os pedidos de um cliente específico.
 
 
+### Requisitos de Projeto
+- .NET 8.0 SDK ou superior
+-  Utilizar Entity Framework Core, SQL Server (local ou via Docker)
+- Visual Studio 2022 ou outro IDE compatível (como Rider ou VS Code)
+- Postman (recomendado para testar endpoints da API)
+-  Clean Architecture (Domain, Application, Infrastructure, API) 
+- Seguir boas práticas de SOLID 
+- Criar pelo menos 3 testes unitários com xUnit ou NUnit
+- Utilizar AutoMapper para mapeamento entre DTOs e entidades
+- Criar validações com FluentValidation
+- Documentar a API com Swagger
+- Utilizar jwt
 
+## 🚀 Como Executar o Projeto
 
+Siga os passos abaixo para configurar e executar a aplicação localmente.
+### Instalação
+1. **Clone o repositório**:
+   ```bash
+   git clone https://github.com/JoaoSimino/DesafioTecnico.git
+   cd DesafioTecnico
+   ```
+
+2. **Restaure as dependências**:
+   ```bash
+   dotnet restore
+   ```
+
+3. **Configure o banco de dados**:
+   - Crie um banco de dados no SQL Server chamado `DesafioTecnico`.
+   - Atualize a string de conexão no arquivo `appsettings.json`:
+     ```json
+     {
+       "ConnectionStrings": {
+         "DefaultConnection": "Server=localhost;Database=DesafioTecnico;Trusted_Connection=True;"
+       }
+     }
+     ```
+   - Aplique as migrações para criar as tabelas:
+     ```bash
+     dotnet ef database update
+     ```
+
+4. **Inicie a aplicação**:
+   ```bash
+   dotnet run
+   ```
+
+5. Acesse a API em `https://localhost:5001` (ou a porta configurada).
+
+## 🛠️ Tecnologias Utilizadas
+
+- **C#**: Linguagem principal do projeto.
+- **ASP.NET Core**: Framework para construção da API REST.
+- **Entity Framework Core**: ORM para interação com o banco de dados.
+- **SQL Server**: Banco de dados relacional para armazenamento de dados.
+- **Swagger**: Documentação interativa da API.
+- **xUnit**: Framework para testes unitários (se aplicável).
+
+## 📚 Estrutura do Projeto
+
+```plaintext
+DesafioTecnico/
+├── Endpoints/         # Controladores da API
+├── Model/             # Modelos de dados
+├── Data/               # Contexto do Entity Framework e migrações
+├── Docker/           # Lógica de negócios
+├── Program.cs          # Configuração da aplicação
+├── DTOs          # Configuração de serviços e middleware
+├── appsettings.json    # Configurações da aplicação
+├── DesafioTecnico.sln  # Solução do Visual Studio
+└── README.md           # Este arquivo
+```
+
+## 🤝 Contribuição
+
+Contribuições são bem-vindas! Para contribuir:
+
+1. Faça um fork do repositório.
+2. Crie uma branch para sua feature: `git checkout -b minha-feature`.
+3. Commit suas alterações: `git commit -m 'Adiciona minha feature'`.
+4. Envie para o repositório remoto: `git push origin minha-feature`.
+5. Abra um Pull Request.
+
+## 📜 Licença
+
+Este projeto está licenciado sob a [MIT License](LICENSE).
+
+## 📞 Contato
+
+Para dúvidas ou sugestões, entre em contato com [João Simino](https://github.com/JoaoSimino).

@@ -1,0 +1,11 @@
+# Top-most EditorConfig file
+root = true
+
+[*.cs]
+# Enable StyleCop rules
+dotnet_analyzer_diagnostic.category-StyleCop.severity = warning
+
+# Exemplos de configuração específica de regras
+dotnet_diagnostic.SA1300.severity = error   # Elementos devem começar com letra maiúscula
+dotnet_diagnostic.SA1600.severity = none    # Desabilita necessidade de comentários de documentação
+dotnet_diagnostic.SA1101.severity = warning   # Prefixo 'this.' obrigatório

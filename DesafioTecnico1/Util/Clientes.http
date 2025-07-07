@@ -1,0 +1,3 @@
+﻿### Obter lista de clientes
+GET https://localhost:7144/api/Cliente
+Accept: application/json

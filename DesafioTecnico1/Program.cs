@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Serilog;
+using Serilog.Sinks.MSSqlServer;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,7 +45,7 @@ else
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
         };
     });
 
@@ -73,7 +75,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "bearer",
         BearerFormat = "JWT",
         In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-        Description = "Insira 'Bearer' seguido de espaço e o token JWT.\r\nExemplo: 'Bearer eyJhb...'"
+        Description = "Insira 'Bearer' seguido de espaço e o token JWT.\r\nExemplo: 'Bearer eyJhb...'",
     });
 
     // Aplica o esquema globalmente
@@ -85,11 +87,11 @@ builder.Services.AddSwaggerGen(c =>
                 Reference = new Microsoft.OpenApi.Models.OpenApiReference
                 {
                     Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
+                    Id = "Bearer",
+                },
             },
             Array.Empty<string>()
-        }
+        },
     });
 });
 
@@ -102,6 +104,30 @@ builder.Services.Configure<JsonOptions>(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
 });
+
+var outputTemplate = "{Timestamp:dd-MM-yyyy HH:mm:ss} [{Level}] {Message}{NewLine}{Exception}";
+
+var sinkOptions = new MSSqlServerSinkOptions 
+{
+    TableName = "Logs",
+    AutoCreateSqlTable = true,
+};
+
+var columnOptions = new ColumnOptions();
+columnOptions.Store.Add(StandardColumn.LogEvent);
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.Console(outputTemplate: outputTemplate)
+    .WriteTo.MSSqlServer(
+        connectionString: "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Estudos;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False",
+        sinkOptions: sinkOptions,
+        columnOptions: columnOptions
+    )
+    .Enrich.FromLogContext()
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<PedidoCanceladoEvent>());
 

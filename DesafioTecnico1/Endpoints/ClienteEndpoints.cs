@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.OpenApi;
 using DesafioTecnico1.DTOs;
 using AutoMapper;
+using Serilog;
 namespace DesafioTecnico1.Endpoints;
 
 public static class ClienteEndpoints
@@ -15,7 +16,9 @@ public static class ClienteEndpoints
 
         group.MapGet("/", async (DesafioTecnicoContext db) =>
         {
-            return await db.Cliente.ToListAsync();
+            var listaDeClientes = await db.Cliente.ToListAsync();
+            Log.Information($"Total de {listaDeClientes.Count}, numero de clientes retornados no Endpoint!!");
+            return listaDeClientes;
         })
         .WithName("GetAllClientes")
         .WithOpenApi();
