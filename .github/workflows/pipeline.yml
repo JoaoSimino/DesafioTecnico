@@ -9,22 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
-
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: password@123
-          POSTGRES_DB: desafio
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+    runs-on: [self-hosted, windows]
 
     env:
       ASPNETCORE_ENVIRONMENT: Development
@@ -34,16 +19,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Start PostgreSQL container
+        run: |
+          docker run -d --name pg-ci-test `
+            -e POSTGRES_USER=user `
+            -e POSTGRES_PASSWORD=password@123 `
+            -e POSTGRES_DB=desafio `
+            -p 5432:5432 `
+            postgres:16
+
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          for /l %%x in (1, 1, 10) do (
+            docker exec pg-ci-test pg_isready && exit /b 0
+            timeout /t 5
+          )
+          echo PostgreSQL did not become ready in time
+          exit /b 1
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-
-      - name: Install EF Core tools
-        run: dotnet tool install --global dotnet-ef
-
-      - name: Add EF Core tools to PATH
-        run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
 
       - name: Restore dependencies
         run: dotnet restore
@@ -51,24 +48,18 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
 
-      - name: Wait for PostgreSQL
-        run: |
-          for i in {1..10}; do
-            pg_isready -h localhost -p 5432 && break
-            echo "Waiting for PostgreSQL..."
-            sleep 5
-          done
-
       - name: Run EF Core migrations
         run: dotnet ef database update --project DesafioTecnico1/DesafioTecnico1.csproj
-        env:
-          ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=desafio;Username=user;Password=password@123"
-          ASPNETCORE_ENVIRONMENT: Development
 
       - name: Run tests
         run: dotnet test --no-build --verbosity normal
 
-      - name: Log in to Docker Hub
+      - name: Stop and remove PostgreSQL container
+        run: |
+          docker stop pg-ci-test
+          docker rm pg-ci-test
+
+      - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
